@@ -11,6 +11,17 @@
         <div class="input-container">
             <input type="text" id="taskInput" placeholder="Enter a new task">
             <input type="datetime-local" id="taskDueDate">
+            <select id="taskCategory">
+                <option value="personal">Personal</option>
+                <option value="work">Work</option>
+                <option value="shopping">Shopping</option>
+                <option value="urgent">Urgent</option>
+            </select>
+            <select id="taskPriority">
+                <option value="low">Low Priority</option>
+                <option value="medium">Medium Priority</option>
+                <option value="high">High Priority</option>
+            </select>
             <button onclick="addTask()">Add Task</button>
         </div>
 

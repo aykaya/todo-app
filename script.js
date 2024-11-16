@@ -27,6 +27,9 @@ function addTask() {
 
     // Start checking for overdue tasks
     checkOverdueTasks();
+
+    // Save after adding
+    saveTasksToLocalStorage();
 }
 
 function formatDueDate(dateString) {
@@ -58,10 +61,12 @@ setInterval(checkOverdueTasks, 60000);
 
 function toggleComplete(element) {
     element.classList.toggle('completed');
+    saveTasksToLocalStorage(); // Save after toggling
 }
 
 function deleteTask(button) {
     button.parentElement.remove();
+    saveTasksToLocalStorage(); // Save after deleting
 }
 
 // Add ability to press Enter to add task
@@ -70,3 +75,39 @@ document.getElementById('taskInput').addEventListener('keypress', function(e) {
         addTask();
     }
 }); 
+
+function saveTasksToLocalStorage() {
+    const taskList = document.getElementById('taskList');
+    const tasks = [];
+    
+    taskList.querySelectorAll('li').forEach(li => {
+        tasks.push({
+            text: li.querySelector('span').textContent,
+            completed: li.querySelector('span').classList.contains('completed'),
+            dueDate: li.querySelector('.due-date')?.textContent || null
+        });
+    });
+    
+    localStorage.setItem('myTasks', JSON.stringify(tasks));
+}
+
+function loadTasksFromLocalStorage() {
+    const savedTasks = localStorage.getItem('myTasks');
+    if (savedTasks) {
+        const tasks = JSON.parse(savedTasks);
+        const taskList = document.getElementById('taskList');
+        
+        tasks.forEach(task => {
+            const li = document.createElement('li');
+            li.innerHTML = `
+                <span onclick="toggleComplete(this)" ${task.completed ? 'class="completed"' : ''}>${task.text}</span>
+                ${task.dueDate ? `<span class="due-date">${task.dueDate}</span>` : ''}
+                <button onclick="deleteTask(this)">Delete</button>
+            `;
+            taskList.appendChild(li);
+        });
+    }
+}
+
+// Load tasks when page loads
+document.addEventListener('DOMContentLoaded', loadTasksFromLocalStorage); 
